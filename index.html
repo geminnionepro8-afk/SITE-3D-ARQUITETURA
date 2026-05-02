@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Architectural Precision | 3D Model Construction</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ===================== LOADER ===================== -->
+  <div id="loader">
+    <div class="loader-content">
+      <div class="loader-brand">ARCHITECTURAL</div>
+      <div id="loader-bar"><div id="loader-fill"></div></div>
+      <div id="loader-percent">0%</div>
+    </div>
+  </div>
+
+  <!-- ===================== HEADER ===================== -->
+  <header class="site-header">
+    <nav>
+      <div class="logo">ARCHITECTURAL</div>
+      <div class="nav-links">
+        <a href="#work">Work</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ===================== PART 1: HERO (sky blue, 100vh) ===================== -->
+  <section id="hero">
+    <div class="hero-content">
+      <h1 class="hero-heading">Extraordinary precision.</h1>
+      <p class="hero-sub">Timeless architectural models and exceptional<br>craftsmanship designed to bring your vision to life.</p>
+    </div>
+    <div class="scroll-hint">
+      <span>Scroll to explore</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 5v14M19 12l-7 7-7-7"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ===================== PART 2: VIDEO SCROLL SPACE (400vh) ===================== -->
+  <div id="video-scroll-space"></div>
+
+  <!-- Fixed canvas — revealed via clip-path as user scrolls -->
+  <div id="canvas-container">
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <!-- ===================== PART 3: CONTENT SECTIONS (normal page flow) ===================== -->
+  <main id="content">
+
+    <!-- S1 + S2 merged: Craftsmanship + Materials — WHITE (2-column split) -->
+    <section class="section bg-white materials-section" id="materials">
+      <div class="materials-layout">
+
+        <!-- LEFT COLUMN: title + subtitle + big image -->
+        <div class="materials-left">
+          <div class="materials-text">
+            <span class="label dark">002 / Craftsmanship</span>
+            <h2 class="dark">Built with<br>Meticulous Care</h2>
+            <p class="dark">Every architectural model is crafted with precision tools and expert techniques, transforming digital designs into tangible masterpieces that capture every nuance of your vision.</p>
+          </div>
+          <div class="materials-main-img">
+            <img 
+              src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=800&q=85&fit=crop" 
+              alt="Architectural model - precision construction"
+              loading="lazy"
+            />
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: 3 feature cards -->
+        <div class="materials-right">
+
+          <div class="mat-card">
+            <div class="mat-card-img">
+              <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=220&q=85&fit=crop" alt="Structural precision"/>
+            </div>
+            <div class="mat-card-text">
+              <h4>Structural Strength</h4>
+              <p>Not susceptible to cracking or deformation over time — our models maintain perfect form for decades of display.</p>
+            </div>
+          </div>
+
+          <div class="mat-card">
+            <div class="mat-card-img">
+              <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=220&q=85&fit=crop" alt="Thermal precision"/>
+            </div>
+            <div class="mat-card-text">
+              <h4>Thermal Precision</h4>
+              <p>Materials are selected for dimensional stability across all temperature and humidity conditions throughout the year.</p>
+            </div>
+          </div>
+
+          <div class="mat-card">
+            <div class="mat-card-img">
+              <img src="https://images.unsplash.com/photo-1486325212027-8081e485255e?w=220&q=85&fit=crop" alt="Zero shrinkage"/>
+            </div>
+            <div class="mat-card-text">
+              <h4>Zero Shrinkage</h4>
+              <p>Ready for immediate display right after finishing — no curing time, no warping, no waiting for perfection.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- S3: Project Catalog — LIGHT GRAY -->
+    <section class="section catalog-section" id="catalog">
+      <div class="catalog-wrap">
+
+        <!-- Header row -->
+        <div class="catalog-header">
+          <div class="catalog-header-left">
+            <h2>Catalog of our<br>projects for 2024</h2>
+          </div>
+          <div class="catalog-header-right">
+            <p class="catalog-sub">Architectural model construction<br>at the peak of precision</p>
+            <span class="catalog-sub-small">trusted by leading studios worldwide</span>
+          </div>
+        </div>
+
+        <!-- Cards row -->
+        <div class="catalog-cards">
+
+          <div class="catalog-card">
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=85&fit=crop" alt="Modern Villa 77m²"/>
+            <div class="catalog-card-info">
+              <span class="catalog-card-name">Modern Villa, 77m²</span>
+              <span class="catalog-card-price">from $48,000</span>
+            </div>
+          </div>
+
+          <div class="catalog-card">
+            <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&q=85&fit=crop" alt="Urban Residence 94m²"/>
+            <div class="catalog-card-info">
+              <span class="catalog-card-name">Urban Residence, 94m²</span>
+              <span class="catalog-card-price">from $62,000</span>
+            </div>
+          </div>
+
+          <div class="catalog-card">
+            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=85&fit=crop" alt="Forest House 65m²"/>
+            <div class="catalog-card-info">
+              <span class="catalog-card-name">Forest House, 65m²</span>
+              <span class="catalog-card-price">from $41,000</span>
+            </div>
+          </div>
+
+          <div class="catalog-card">
+            <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600&q=85&fit=crop" alt="Compact Home 60m²"/>
+            <div class="catalog-card-info">
+              <span class="catalog-card-name">Compact Home, 60m²</span>
+              <span class="catalog-card-price">from $36,000</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Footer row -->
+        <div class="catalog-footer">
+          <a href="#contact" class="catalog-btn">View Catalog →</a>
+          <div class="catalog-nav">
+            <button class="catalog-nav-btn" id="catalogPrev" aria-label="Previous">&#9664;</button>
+            <button class="catalog-nav-btn" id="catalogNext" aria-label="Next">&#9654;</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- S5: Showcase + Testimonial — LIGHT GRAY -->
+    <section class="section showcase-section" id="showcase">
+
+      <!-- Part A: Title with watermark background -->
+      <div class="showcase-title-wrap">
+        <div class="showcase-watermark">Architectural</div>
+        <span class="label dark center">Our Clients Say</span>
+        <h2 class="showcase-title">
+          Here's What <span class="accent-blue">Warm Words</span><br>
+          <span class="accent-blue">Our Clients</span> Say
+        </h2>
+      </div>
+
+      <!-- Part B: 2 columns — image left, testimonial right -->
+      <div class="showcase-columns">
+
+        <!-- Left: construction image -->
+        <div class="showcase-img-col">
+          <img
+            src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=700&q=85&fit=crop"
+            alt="Construction team at work"
+            class="showcase-col-img"
+          />
+        </div>
+
+        <!-- Right: testimonial -->
+        <div class="showcase-testimonial-col">
+
+          <!-- Rating row -->
+          <div class="testi-rating-row">
+            <span class="testi-score">4.80</span>
+            <div class="testi-stars">
+              <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+            </div>
+            <p class="testi-rating-text">From Concept To Reality, The Team Turned My Vision Into A Stunning, Livable Space. I Couldn't Be Happier With This!</p>
+          </div>
+
+          <!-- Quote -->
+          <blockquote class="testi-quote">
+            "The level of detail in our architectural model was extraordinary. The clean lines, precise tolerances, and premium materials created such a compelling presentation — our clients were immediately convinced."
+          </blockquote>
+
+          <!-- Author -->
+          <div class="testi-author">
+            <div class="testi-avatar">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80&fit=crop&crop=face" alt="Morgan Dufresne"/>
+            </div>
+            <div class="testi-author-info">
+              <strong>Morgan Dufresne</strong>
+              <span>Company Owner</span>
+            </div>
+          </div>
+
+          <!-- Bottom stat -->
+          <div class="testi-bottom-stat">
+            Our Website <span class="accent-blue">2,000+</span> VIP Customer
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- S6: Services -->
+    <section class="section services-section" id="services">
+      <div class="services-wrap">
+
+        <div class="services-header">
+          <span class="services-dot">•</span>
+          <h2>We offer flexible<br>ways to work with us</h2>
+        </div>
+
+        <div class="services-cards">
+
+          <div class="service-card service-card--light">
+            <div class="service-card-body">
+              <h4>Full Project</h4>
+              <p>We handle everything from initial consultation and 3D modeling to fabrication and white-glove delivery to your studio.</p>
+            </div>
+            <button class="service-card-btn" aria-label="Learn more">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="service-card service-card--dark">
+            <div class="service-card-body">
+              <h4>Consultation</h4>
+              <p>If you have your own team, we provide expert guidance on materials, scale, and construction techniques for your project.</p>
+            </div>
+            <button class="service-card-btn" aria-label="Learn more">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="service-card service-card--light">
+            <div class="service-card-body">
+              <h4>Express Model</h4>
+              <p>Need it fast? Our express service delivers a precision architectural model in as little as 7 business days.</p>
+            </div>
+            <button class="service-card-btn" aria-label="Learn more">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="service-card service-card--dark">
+            <div class="service-card-body">
+              <h4>Custom Order</h4>
+              <p>Have a unique requirement? We work with any scale, material, or complexity. Contact us to discuss your vision.</p>
+            </div>
+            <button class="service-card-btn" aria-label="Learn more">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- S5: CTA Final — BLACK -->
+    <section class="section bg-black tall" id="cta">
+      <div class="section-layout layout-center">
+        <span class="label center">012 / Get Started</span>
+        <h2 class="center">Ready to Build<br>Your Vision?</h2>
+        <p class="center sub">From concept sketches to final presentation models, we bring your designs to life.</p>
+        <a href="#contact" class="cta-btn">Start Your Project →</a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
