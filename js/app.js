@@ -273,3 +273,147 @@ function initCounters() {
 
   nums.forEach(el => observer.observe(el));
 }
+
+// ============================================
+// EXPANDABLE GALLERY — LIGHTBOX
+// ============================================
+(function () {
+  const galleryImages = [
+    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1600&q=90&fit=crop',
+    'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1600&q=90&fit=crop',
+    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1600&q=90&fit=crop',
+    'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1600&q=90&fit=crop'
+  ];
+
+  let currentLightbox = null;
+
+  const lightbox  = document.getElementById('galleryLightbox');
+  const lbImg     = document.getElementById('lightboxImg');
+  const lbCounter = document.getElementById('lightboxCounter');
+  const lbClose   = document.getElementById('lightboxClose');
+  const lbPrev    = document.getElementById('lightboxPrev');
+  const lbNext    = document.getElementById('lightboxNext');
+
+  if (!lightbox) return;
+
+  // Open lightbox
+  function openLightbox(index) {
+    currentLightbox = index;
+    lbImg.src = galleryImages[index];
+    lbCounter.textContent = `${index + 1} / ${galleryImages.length}`;
+    lightbox.classList.add('open');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  // Close lightbox
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    currentLightbox = null;
+  }
+
+  // Navigate with fade transition
+  function goTo(index) {
+    const next = (index + galleryImages.length) % galleryImages.length;
+    lbImg.classList.add('switching');
+    setTimeout(() => {
+      currentLightbox = next;
+      lbImg.src = galleryImages[next];
+      lbCounter.textContent = `${next + 1} / ${galleryImages.length}`;
+      lbImg.classList.remove('switching');
+    }, 220);
+  }
+
+  // Attach click to each gallery item
+  document.querySelectorAll('.exp-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const idx = parseInt(item.dataset.index, 10);
+      openLightbox(idx);
+    });
+  });
+
+  // Controls
+  lbClose.addEventListener('click', closeLightbox);
+  lbPrev.addEventListener('click', (e) => { e.stopPropagation(); goTo(currentLightbox - 1); });
+  lbNext.addEventListener('click', (e) => { e.stopPropagation(); goTo(currentLightbox + 1); });
+
+  // Click backdrop to close
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape')      closeLightbox();
+    if (e.key === 'ArrowRight')  goTo(currentLightbox + 1);
+    if (e.key === 'ArrowLeft')   goTo(currentLightbox - 1);
+  });
+})();
+
+// ============================================
+// BEFORE & AFTER IMAGE COMPARISON SLIDER
+// ============================================
+(function () {
+  const container = document.getElementById('imgComparison');
+  if (!container) return;
+
+  const afterImg = container.querySelector('.comparison-img--after');
+  const slider   = container.querySelector('.comparison-slider');
+
+  let isDragging = false;
+  let currentPos = 50; // percentage
+
+  function setPosition(x) {
+    const rect = container.getBoundingClientRect();
+    const raw  = ((x - rect.left) / rect.width) * 100;
+    const pct  = Math.min(Math.max(raw, 0), 100);
+    currentPos = pct;
+
+    // Clip the AFTER image to show only the left portion
+    afterImg.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+    slider.style.left = `${pct}%`;
+  }
+
+  // Mouse events
+  container.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    setPosition(e.clientX);
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    setPosition(e.clientX);
+  });
+
+  window.addEventListener('mouseup', () => { isDragging = false; });
+
+  // Touch events
+  container.addEventListener('touchstart', (e) => {
+    isDragging = true;
+    setPosition(e.touches[0].clientX);
+  }, { passive: true });
+
+  window.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    setPosition(e.touches[0].clientX);
+  }, { passive: true });
+
+  window.addEventListener('touchend', () => { isDragging = false; });
+})();
+
+// ============================================
+// TESTIMONIALS — duplicate cards for seamless infinite scroll
+// ============================================
+(function () {
+  document.querySelectorAll('.testi-track').forEach(track => {
+    // Clone all children and append — creates the seamless loop
+    const cards = Array.from(track.children);
+    cards.forEach(card => {
+      const clone = card.cloneNode(true);
+      track.appendChild(clone);
+    });
+  });
+})();

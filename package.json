@@ -1,0 +1,9 @@
+{
+  "name": "website-3d-arquitetura",
+  "version": "1.0.0",
+  "description": "Architectural Precision — 3D Model Construction website",
+  "scripts": {
+    "dev": "npx serve . -p 3000",
+    "start": "npx serve . -p 3000"
+  }
+}
