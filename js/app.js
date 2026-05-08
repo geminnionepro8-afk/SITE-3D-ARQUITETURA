@@ -133,17 +133,19 @@ function initSite() {
 }
 
 // ============================================
-// LENIS
+// LENIS — smooth scroll otimizado
 // ============================================
 function initLenis() {
   const lenis = new Lenis({
-    duration: 1.2,
+    duration: 0.9,
     easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    smoothWheel: true
+    smoothWheel: true,
+    wheelMultiplier: 1,
+    touchMultiplier: 1.5,
   });
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add(t => lenis.raf(t * 1000));
-  gsap.ticker.lagSmoothing(0);
+  gsap.ticker.lagSmoothing(500, 33);    // tolera até 33ms de lag antes de pular
 }
 
 // ============================================
@@ -169,19 +171,21 @@ function animateHero() {
 }
 
 // ============================================
-// VIDEO SCROLL — canvas shows/hides based on
-// whether user is in the #video-scroll-space
+// VIDEO SCROLL — otimizado com RAF throttle
 // ============================================
 function initVideoScroll() {
   const hero       = document.getElementById('hero');
   const videoSpace = document.getElementById('video-scroll-space');
   const container  = document.getElementById('canvas-container');
 
+  let rafPending = false;
+  let lastIdx = -1;
+
   ScrollTrigger.create({
     trigger: videoSpace,
     start: 'top 80%',
     end: 'bottom bottom',
-    scrub: true,
+    scrub: 0.5,                          // suaviza o scrub, reduz chamadas
     onEnter:     () => container.classList.add('active'),
     onLeaveBack: () => {
       container.classList.remove('active');
@@ -190,24 +194,29 @@ function initVideoScroll() {
     onUpdate: self => {
       const p = self.progress;
 
-      // 1. Hero fades out in first 15% of scroll
-      if (hero) {
-        hero.style.opacity = Math.max(0, 1 - p * 10);
-      }
+      // Hero fade
+      if (hero) hero.style.opacity = Math.max(0, 1 - p * 10);
 
-      // 2. Canvas expands: starts immediately at p=0, full screen by p=0.25
-      const phase   = Math.min(p / 0.25, 1);
-      const insetV  = 30 * (1 - phase);
-      const insetH  = 15 * (1 - phase);
-      const radius  = 24 * (1 - phase);
+      // Clip-path expand
+      const phase  = Math.min(p / 0.25, 1);
+      const insetV = 30 * (1 - phase);
+      const insetH = 15 * (1 - phase);
+      const radius = 24 * (1 - phase);
       container.style.clipPath =
         `inset(${insetV}% ${insetH}% ${insetV}% ${insetH}% round ${radius}px)`;
 
-      // 3. Frame scrubbing across full 300vh
+      // Frame scrub — só redesenha se o frame mudou, com RAF único
       const idx = Math.min(Math.floor(p * FRAME_COUNT), FRAME_COUNT - 1);
-      if (idx !== currentFrame) {
+      if (idx !== lastIdx) {
+        lastIdx = idx;
         currentFrame = idx;
-        requestAnimationFrame(() => drawFrame(currentFrame));
+        if (!rafPending) {
+          rafPending = true;
+          requestAnimationFrame(() => {
+            drawFrame(currentFrame);
+            rafPending = false;
+          });
+        }
       }
     }
   });
@@ -275,130 +284,190 @@ function initCounters() {
 }
 
 // ============================================
-// EXPANDABLE GALLERY — LIGHTBOX
+// HEADER FLUTUANTE — contrai ao primeiro scroll
 // ============================================
 (function () {
-  const galleryImages = [
-    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1600&q=90&fit=crop',
-    'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1600&q=90&fit=crop',
-    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1600&q=90&fit=crop',
-    'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1600&q=90&fit=crop'
-  ];
+  const header = document.getElementById('siteHeader');
+  if (!header) return;
 
-  let currentLightbox = null;
+  let ticking = false;
 
+  function onScroll() {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        if (window.scrollY > 10) {
+          header.classList.add('floating');
+        } else {
+          header.classList.remove('floating');
+        }
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll(); // estado inicial
+})();
+
+// ============================================
+// GALLERY — expand on hover + lightbox
+// ============================================
+(function () {
+  const track   = document.getElementById('galleryTrack');
+  const prevBtn = document.getElementById('galPrev');
+  const nextBtn = document.getElementById('galNext');
+  if (!track) return;
+
+  const cards = Array.from(track.querySelectorAll('.gal-card'));
+  const total = cards.length;
+  const perPage = 4; // cards visíveis por vez
+  let page = 0;
+  const totalPages = Math.ceil(total / perPage);
+
+  function update() {
+    cards.forEach((c, i) => {
+      const inPage = i >= page * perPage && i < (page + 1) * perPage;
+      c.style.display = inPage ? '' : 'none';
+    });
+    prevBtn.style.opacity = page === 0 ? '0.35' : '1';
+    nextBtn.style.opacity = page >= totalPages - 1 ? '0.35' : '1';
+  }
+
+  prevBtn.addEventListener('click', () => { if (page > 0) { page--; update(); } });
+  nextBtn.addEventListener('click', () => { if (page < totalPages - 1) { page++; update(); } });
+  update();
+
+  // Lightbox
   const lightbox  = document.getElementById('galleryLightbox');
   const lbImg     = document.getElementById('lightboxImg');
   const lbCounter = document.getElementById('lightboxCounter');
   const lbClose   = document.getElementById('lightboxClose');
   const lbPrev    = document.getElementById('lightboxPrev');
   const lbNext    = document.getElementById('lightboxNext');
-
   if (!lightbox) return;
 
-  // Open lightbox
-  function openLightbox(index) {
-    currentLightbox = index;
-    lbImg.src = galleryImages[index];
-    lbCounter.textContent = `${index + 1} / ${galleryImages.length}`;
+  const images = cards.map(c => c.querySelector('img').src);
+  let currentLB = 0;
+
+  function openLB(i) {
+    currentLB = i;
+    lbImg.src = images[i];
+    lbCounter.textContent = `${i + 1} / ${total}`;
     lightbox.classList.add('open');
     lightbox.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
   }
 
-  // Close lightbox
-  function closeLightbox() {
+  function closeLB() {
     lightbox.classList.remove('open');
     lightbox.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
-    currentLightbox = null;
   }
 
-  // Navigate with fade transition
-  function goTo(index) {
-    const next = (index + galleryImages.length) % galleryImages.length;
+  function goLB(i) {
+    const next = (i + total) % total;
     lbImg.classList.add('switching');
     setTimeout(() => {
-      currentLightbox = next;
-      lbImg.src = galleryImages[next];
-      lbCounter.textContent = `${next + 1} / ${galleryImages.length}`;
+      currentLB = next;
+      lbImg.src = images[next];
+      lbCounter.textContent = `${next + 1} / ${total}`;
       lbImg.classList.remove('switching');
     }, 220);
   }
 
-  // Attach click to each gallery item
-  document.querySelectorAll('.exp-item').forEach(item => {
-    item.addEventListener('click', () => {
-      const idx = parseInt(item.dataset.index, 10);
-      openLightbox(idx);
-    });
-  });
-
-  // Controls
-  lbClose.addEventListener('click', closeLightbox);
-  lbPrev.addEventListener('click', (e) => { e.stopPropagation(); goTo(currentLightbox - 1); });
-  lbNext.addEventListener('click', (e) => { e.stopPropagation(); goTo(currentLightbox + 1); });
-
-  // Click backdrop to close
-  lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) closeLightbox();
-  });
-
-  // Keyboard navigation
-  document.addEventListener('keydown', (e) => {
+  cards.forEach((card, i) => card.addEventListener('click', () => openLB(i)));
+  lbClose.addEventListener('click', closeLB);
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLB(); });
+  lbPrev.addEventListener('click', e => { e.stopPropagation(); goLB(currentLB - 1); });
+  lbNext.addEventListener('click', e => { e.stopPropagation(); goLB(currentLB + 1); });
+  document.addEventListener('keydown', e => {
     if (!lightbox.classList.contains('open')) return;
-    if (e.key === 'Escape')      closeLightbox();
-    if (e.key === 'ArrowRight')  goTo(currentLightbox + 1);
-    if (e.key === 'ArrowLeft')   goTo(currentLightbox - 1);
+    if (e.key === 'Escape')     closeLB();
+    if (e.key === 'ArrowRight') goLB(currentLB + 1);
+    if (e.key === 'ArrowLeft')  goLB(currentLB - 1);
   });
 })();
 
 // ============================================
-// BEFORE & AFTER IMAGE COMPARISON SLIDER
+// BEFORE & AFTER IMAGE COMPARISON SLIDER — otimizado
 // ============================================
 (function () {
   const container = document.getElementById('imgComparison');
   if (!container) return;
 
-  const afterImg = container.querySelector('.comparison-img--after');
-  const slider   = container.querySelector('.comparison-slider');
+  // Usamos um wrapper interno para a imagem AFTER em vez de clip-path na imagem
+  // Isso evita repaint da imagem inteira a cada movimento
+  const afterImg  = container.querySelector('.comparison-img--after');
+  const slider    = container.querySelector('.comparison-slider');
 
-  let isDragging = false;
-  let currentPos = 50; // percentage
+  let isDragging  = false;
+  let rafPending  = false;
+  let pendingX    = null;
+  let cachedRect  = null;   // cache do getBoundingClientRect
+  let currentPos  = 50;
 
-  function setPosition(x) {
-    const rect = container.getBoundingClientRect();
-    const raw  = ((x - rect.left) / rect.width) * 100;
-    const pct  = Math.min(Math.max(raw, 0), 100);
-    currentPos = pct;
+  // Invalida o cache quando a janela redimensiona
+  window.addEventListener('resize', () => { cachedRect = null; }, { passive: true });
 
-    // Clip the AFTER image to show only the left portion
-    afterImg.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
-    slider.style.left = `${pct}%`;
+  function getRect() {
+    if (!cachedRect) cachedRect = container.getBoundingClientRect();
+    return cachedRect;
   }
 
-  // Mouse events
+  function clamp(val) { return Math.min(Math.max(val, 3), 97); }
+
+  function applyPosition() {
+    rafPending = false;
+    if (pendingX === null) return;
+
+    const rect = getRect();
+    const pct  = clamp(((pendingX - rect.left) / rect.width) * 100);
+    currentPos = pct;
+    pendingX   = null;
+
+    // Atualiza só a variável CSS — o browser aplica via GPU sem reflow
+    slider.style.left = pct + '%';
+    container.style.setProperty('--split', pct + '%');
+  }
+
+  function scheduleUpdate(x) {
+    pendingX = x;
+    if (!rafPending) {
+      rafPending = true;
+      requestAnimationFrame(applyPosition);
+    }
+  }
+
+  // Init
+  container.style.setProperty('--split', '50%');
+  slider.style.left = '50%';
+
+  // Mouse
   container.addEventListener('mousedown', (e) => {
     isDragging = true;
-    setPosition(e.clientX);
-  });
+    cachedRect = container.getBoundingClientRect(); // captura fresco ao iniciar
+    scheduleUpdate(e.clientX);
+    e.preventDefault();
+  }, { passive: false });
 
   window.addEventListener('mousemove', (e) => {
     if (!isDragging) return;
-    setPosition(e.clientX);
-  });
+    scheduleUpdate(e.clientX);
+  }, { passive: true });
 
   window.addEventListener('mouseup', () => { isDragging = false; });
 
-  // Touch events
+  // Touch
   container.addEventListener('touchstart', (e) => {
     isDragging = true;
-    setPosition(e.touches[0].clientX);
+    cachedRect = container.getBoundingClientRect();
+    scheduleUpdate(e.touches[0].clientX);
   }, { passive: true });
 
   window.addEventListener('touchmove', (e) => {
     if (!isDragging) return;
-    setPosition(e.touches[0].clientX);
+    scheduleUpdate(e.touches[0].clientX);
   }, { passive: true });
 
   window.addEventListener('touchend', () => { isDragging = false; });
@@ -417,3 +486,20 @@ function initCounters() {
     });
   });
 })();
+
+// ============================================
+// FORMULÁRIO — submit handler
+// ============================================
+function handleFormSubmit(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('.form-submit-btn');
+  btn.textContent = 'Enviado! ✓';
+  btn.style.background = '#4caf82';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.innerHTML = 'Enviar Solicitação <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+    btn.style.background = '';
+    btn.disabled = false;
+    e.target.reset();
+  }, 3000);
+}
