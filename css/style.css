@@ -51,7 +51,9 @@
 
 /* Seção de materiais — fundo claro, título escuro */
 .materials-section h2,
-.materials-section .materials-title {
+.materials-section .materials-title,
+.about-us-section h2,
+.about-us-section .about-us-title {
   background: none !important;
   -webkit-background-clip: unset !important;
   background-clip: unset !important;
@@ -3506,6 +3508,218 @@ p.sub.dark { color: #555; }
   .materials-stats {
     flex-wrap: wrap;
     gap: 2rem;
+  }
+}
+
+/* ============================================
+   QUEM SOMOS SECTION
+   ============================================ */
+
+.about-us-section {
+  background: #ffffff;
+  padding: 7rem 5vw;
+  min-height: auto;
+  display: block;
+}
+
+.about-us-wrap {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 5rem;
+}
+
+/* BLOCO 1: Introdução centralizada */
+.about-us-intro {
+  text-align: center;
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.about-us-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.8rem, 4vw, 4.2rem);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+}
+
+.about-us-intro-text {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #666;
+  font-weight: 300;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+/* BLOCO 2: Grid principal */
+.about-us-main {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 5rem;
+  align-items: start;
+}
+
+/* Coluna Esquerda: Imagem */
+.about-us-image-col {
+  position: sticky;
+  top: 120px;
+}
+
+.about-us-image-wrap {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.about-us-img {
+  width: 100%;
+  aspect-ratio: 3/2;
+  object-fit: cover;
+  display: block;
+  border-radius: 20px;
+  transition: transform 0.6s ease;
+}
+
+.about-us-image-wrap:hover .about-us-img {
+  transform: scale(1.03);
+}
+
+/* Badge flutuante */
+.about-us-badge {
+  position: absolute;
+  bottom: 1.75rem;
+  left: 1.75rem;
+  background: linear-gradient(135deg, #2e2e2e 0%, #1a1a1a 50%, #252525 100%);
+  border-radius: 14px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  backdrop-filter: blur(10px);
+}
+
+.about-us-badge-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.about-us-badge-label {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  line-height: 1.4;
+}
+
+/* Coluna Direita: Texto */
+.about-us-text-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-top: 0.5rem;
+}
+
+.about-us-text {
+  font-size: 0.95rem;
+  line-height: 1.85;
+  color: #555;
+  font-weight: 300;
+}
+
+.about-us-text strong {
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+.about-us-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(0,0,0,0.08);
+  margin: 0.5rem 0;
+}
+
+/* Diferenciais */
+.about-us-features {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.about-us-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+}
+
+.about-us-feature-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #f5f5f5;
+  border: 1px solid rgba(0,0,0,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+  transition: all 0.3s ease;
+}
+
+.about-us-feature:hover .about-us-feature-icon {
+  background: linear-gradient(135deg, #2e2e2e 0%, #1a1a1a 50%, #252525 100%);
+  border-color: transparent;
+}
+
+.about-us-feature:hover .about-us-feature-icon svg {
+  stroke: #ffffff;
+}
+
+.about-us-feature-icon svg {
+  stroke: #555;
+  transition: stroke 0.3s ease;
+}
+
+.about-us-feature-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.about-us-feature-text h4 {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  letter-spacing: 0.01em;
+}
+
+.about-us-feature-text p {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #888;
+  font-weight: 300;
+}
+
+/* Responsivo */
+@media (max-width: 900px) {
+  .about-us-main {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  .about-us-image-col {
+    position: static;
+  }
+  .about-us-img {
+    aspect-ratio: 16/9;
   }
 }
 
