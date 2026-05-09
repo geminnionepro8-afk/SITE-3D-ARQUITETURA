@@ -88,79 +88,80 @@ body {
 #loader-percent { font-size: 0.8rem; color: var(--gray); letter-spacing: 0.1em; }
 
 /* ============================================
-   HEADER
+   HEADER - Fixo no topo (padrão)
    ============================================ */
 .site-header {
-  position: fixed; top: 0; left: 0; width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
   z-index: 1000;
-  transition: background 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
 }
 
-/* ============================================
-   HEADER — fixo no hero, pill ao sair
-   ============================================ */
-.site-header {
-  position: fixed; top: 0; left: 0; width: 100%;
-  z-index: 1000;
-  padding: 1.5rem 5vw;
-  transition: padding 0.5s ease;
-}
-
-/* Topbar — visível no hero */
+/* Topbar - sempre visível */
 .header-topbar {
-  max-width: 1400px;
-  margin: 0 auto 0.4rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 0.5rem;
-  overflow: hidden;
-  max-height: 28px;
-  opacity: 1;
-  transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.4s ease;
+  background: #f8f8f8;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  padding: 0.5rem 0;
 }
 
 .header-topbar-inner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-
-.header-contact-items { display: flex; gap: 1.5rem; }
-
-.header-contact-item {
-  display: flex; align-items: center; gap: 0.4rem;
-  font-size: 0.7rem; color: rgba(255,255,255,0.6);
-  text-decoration: none; letter-spacing: 0.03em;
-  transition: color 0.3s;
-}
-.header-contact-item:hover { color: #ffffff; }
-
-.header-topbar-right span {
-  font-size: 0.7rem; color: rgba(255,255,255,0.35); letter-spacing: 0.05em;
-}
-
-/* Nav — sem pill no hero */
-.header-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0;
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  transition: background 0.5s ease, border-radius 0.5s ease,
-              box-shadow 0.5s ease, padding 0.5s ease,
-              max-width 0.5s ease, border-color 0.5s ease;
+  padding: 0 5vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-/* Logo com imagem real */
+.header-contact-items {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.header-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  color: #666;
+  text-decoration: none;
+  letter-spacing: 0.03em;
+  transition: color 0.3s;
+}
+
+.header-contact-item:hover {
+  color: #1a1a1a;
+}
+
+.header-topbar-right span {
+  font-size: 0.7rem;
+  color: #999;
+  letter-spacing: 0.05em;
+}
+
+/* Nav principal */
+.header-nav {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem 5vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Logo */
 .logo {
-  display: flex; align-items: center;
-  text-decoration: none; cursor: default; flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer;
+  flex-shrink: 0;
 }
 
 .logo-img {
@@ -171,99 +172,83 @@ body {
   transition: opacity 0.3s ease;
 }
 
-/* No hero: logo branco visível, escuro oculto */
-.logo-img--white { opacity: 1; filter: brightness(0) invert(1); }
-.logo-img--dark  { display: none; }
+/* Logo sempre escuro */
+.logo-img--white {
+  display: none;
+}
 
-/* Quando flutuante: logo escuro visível, branco oculto */
-.site-header.floating .logo-img--white { display: none; }
-.site-header.floating .logo-img--dark  { display: block; filter: brightness(0); opacity: 1; }
+.logo-img--dark {
+  display: block;
+  filter: brightness(0);
+  opacity: 1;
+}
 
-/* Remove estilos antigos do logo-mark/text que não existem mais */
-.logo-mark, .logo-text, .logo-name, .logo-tagline { display: none; }
+/* Links de navegação */
+.nav-links {
+  display: flex;
+  gap: 1.75rem;
+  align-items: center;
+}
 
-.nav-links { display: flex; gap: 1.75rem; align-items: center; }
 .nav-links a {
-  color: rgba(255,255,255,0.88); text-decoration: none;
-  font-size: 0.78rem; font-weight: 500;
-  letter-spacing: 0.05em; text-transform: uppercase;
+  color: #1a1a1a;
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   transition: color 0.3s;
 }
-.nav-links a:hover { color: #ffffff; }
+
+.nav-links a:hover {
+  color: #000000;
+}
 
 .nav-cta {
-  background: #ffffff;
-  color: #0a0a0a !important;
+  background: linear-gradient(135deg, #2e2e2e 0%, #1a1a1a 50%, #252525 100%);
+  color: #ffffff !important;
   padding: 0.65rem 1.4rem;
   border-radius: 10px;
   font-weight: 700 !important;
   font-size: 0.78rem !important;
   letter-spacing: 0.04em !important;
   white-space: nowrap;
-  transition: background 0.3s ease, transform 0.3s ease !important;
-  opacity: 1 !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
+
 .nav-cta:hover {
-  background: rgba(255,255,255,0.88) !important;
-  transform: translateY(-1px); opacity: 1 !important;
-}
-
-/* ── Estado inicial (hero): topbar oculta ── */
-.header-topbar {
-  display: none;
-}
-}
-.nav-cta:hover {
-  background: rgba(255,255,255,0.88) !important;
-  transform: translateY(-1px); opacity: 1 !important;
-}
-
-/* ── FLOATING: acrílico translúcido elegante ── */
-.site-header.floating {
-  padding: 0.75rem 5vw;
-}
-
-.site-header.floating .header-nav {
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.8);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  padding: 0.9rem 1.5rem;
-  max-width: 860px;
-}
-
-.site-header.floating .logo-name {
-  color: #0a0a0a;
-}
-.site-header.floating .logo-tagline {
-  color: rgba(0,0,0,0.45);
-}
-.site-header.floating .logo-mark {
-  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-}
-.site-header.floating .nav-links a {
-  color: #1a1a1a;
-}
-.site-header.floating .nav-links a:hover {
-  color: #000000;
-}
-.site-header.floating .nav-cta {
-  background: linear-gradient(135deg, #2e2e2e 0%, #1a1a1a 50%, #252525 100%);
-  color: #ffffff !important;
-  border: 1px solid rgba(0,0,0,0.15);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 14px rgba(0,0,0,0.2);
-  border-radius: 10px;
-}
-.site-header.floating .nav-cta:hover {
   background: linear-gradient(135deg, #3a3a3a 0%, #222 50%, #303030 100%) !important;
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Remove estilos antigos */
+.logo-mark, .logo-text, .logo-name, .logo-tagline {
+  display: none;
+}
+
+/* Remove estado floating (não usado mais) */
+.site-header.floating .header-nav,
+.site-header.floating .logo-name,
+.site-header.floating .logo-tagline,
+.site-header.floating .logo-mark,
+.site-header.floating .nav-links a,
+.site-header.floating .nav-links a:hover,
+.site-header.floating .nav-cta,
+.site-header.floating .nav-cta:hover,
+.site-header.floating .logo-img--white,
+.site-header.floating .logo-img--dark {
+  /* Estilos removidos - header sempre fixo */
 }
 
 @media (max-width: 768px) {
-  .nav-links a:not(.nav-cta) { display: none; }
-  .site-header.floating .header-nav { padding: 0.75rem 1.25rem; }
+  .nav-links a:not(.nav-cta) {
+    display: none;
+  }
+  .header-nav {
+    padding: 0.75rem 5vw;
+  }
 }
 
 

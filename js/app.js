@@ -284,33 +284,6 @@ function initCounters() {
 }
 
 // ============================================
-// HEADER FLUTUANTE — contrai ao primeiro scroll
-// ============================================
-(function () {
-  const header = document.getElementById('siteHeader');
-  if (!header) return;
-
-  let ticking = false;
-
-  function onScroll() {
-    if (!ticking) {
-      requestAnimationFrame(() => {
-        if (window.scrollY > 10) {
-          header.classList.add('floating');
-        } else {
-          header.classList.remove('floating');
-        }
-        ticking = false;
-      });
-      ticking = true;
-    }
-  }
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll(); // estado inicial
-})();
-
-// ============================================
 // GALLERY — expand on hover + lightbox
 // ============================================
 (function () {
