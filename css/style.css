@@ -278,10 +278,11 @@ body {
   background: linear-gradient(
     180deg,
     #7ec8e3 0%,
-    #a8d8ea 20%,
-    #c5e8f5 45%,
-    #ddf0f8 65%,
-    #eef7fb 82%,
+    #8dcde7 25%,
+    #9dd4eb 50%,
+    #aedcef 70%,
+    #b8e1f2 80%,
+    #ddf0f8 90%,
     #ffffff 100%
   );
   display: flex;
@@ -313,12 +314,13 @@ body {
   font-weight: 500;
   line-height: 1.05;
   letter-spacing: -0.03em;
-  color: #3a3a3a;
+  color: #ffffff;
   margin: 0 auto 1.25rem auto;
   padding: 0;
   text-align: center;
   width: 100%;
   display: block;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.08);
 }
 
 .hero-label {
@@ -327,7 +329,7 @@ body {
   font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #777;
+  color: rgba(255,255,255,0.85);
   margin-bottom: 1.5rem;
 }
 
@@ -335,7 +337,7 @@ body {
   font-family: 'DM Sans', 'Inter', sans-serif;
   font-size: clamp(0.95rem, 1.2vw, 1.1rem);
   font-weight: 400;
-  color: #777;
+  color: rgba(255,255,255,0.9);
   max-width: 380px;
   margin: 0 auto;
   line-height: 1.7;
@@ -350,14 +352,17 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  color: #2a2a2a;
+  color: rgba(255,255,255,0.85);
   font-size: 0.68rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   z-index: 3;
   font-family: 'DM Sans', sans-serif;
 }
-.scroll-hint svg { animation: bounce 2s ease-in-out infinite; }
+.scroll-hint svg { 
+  animation: bounce 2s ease-in-out infinite;
+  stroke: rgba(255,255,255,0.85);
+}
 @keyframes bounce {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(8px); }
