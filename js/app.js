@@ -603,3 +603,65 @@ function handleFormSubmit(e) {
   // Inicializa
   updateCarousel();
 })();
+
+// ============================================
+// TESTIMONIALS — autorotate + animação elástica
+// ============================================
+(function () {
+  const avatarItems  = document.querySelectorAll('.testi-avatar-item');
+  const quoteItems   = document.querySelectorAll('.testi-quote-item');
+  const pills        = document.querySelectorAll('.testi-pill');
+
+  if (!avatarItems.length) return;
+
+  let active       = 0;
+  let autorotate   = true;
+  const TIMING     = 7000;
+  let interval     = null;
+
+  function goTo(index, stopAuto) {
+    if (index === active) return;
+    if (stopAuto) {
+      autorotate = false;
+      clearInterval(interval);
+    }
+
+    const prev = active;
+    active = index;
+
+    // Avatar: marca o anterior como "leaving" (roda para o outro lado)
+    avatarItems[prev].classList.remove('active');
+    avatarItems[prev].classList.add('leaving');
+    setTimeout(() => avatarItems[prev].classList.remove('leaving'), 700);
+
+    // Avatar: entra o novo
+    avatarItems[active].classList.add('active');
+
+    // Quote: marca o anterior como "leaving"
+    quoteItems[prev].classList.remove('active');
+    quoteItems[prev].classList.add('leaving');
+    setTimeout(() => quoteItems[prev].classList.remove('leaving'), 500);
+
+    // Quote: entra o novo
+    quoteItems[active].classList.add('active');
+
+    // Pills
+    pills.forEach((p, i) => p.classList.toggle('active', i === active));
+  }
+
+  function startAutorotate() {
+    clearInterval(interval);
+    interval = setInterval(() => {
+      const next = (active + 1) % avatarItems.length;
+      goTo(next, false);
+    }, TIMING);
+  }
+
+  // Pills clicáveis
+  pills.forEach((pill, i) => {
+    pill.addEventListener('click', () => goTo(i, true));
+  });
+
+  // Inicia autorotate
+  startAutorotate();
+})();
