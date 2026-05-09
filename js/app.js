@@ -503,3 +503,103 @@ function handleFormSubmit(e) {
     e.target.reset();
   }, 3000);
 }
+
+
+// ============================================
+// VISIONARY CAROUSEL + TIMELINE
+// ============================================
+(function() {
+  const track = document.getElementById('visionaryTrack');
+  const prevBtn = document.getElementById('visionaryPrev');
+  const nextBtn = document.getElementById('visionaryNext');
+  const description = document.getElementById('visionaryDescription');
+  const timelineSteps = document.querySelectorAll('.timeline-step');
+  
+  if (!track || !prevBtn || !nextBtn) return;
+  
+  const cards = Array.from(track.children);
+  let currentIndex = 0;
+  
+  function updateCarousel() {
+    // Move o track - cards meio termo (42%)
+    const offset = currentIndex * -44.5; // 42% + 2.5% gap
+    track.style.transform = `translateX(${offset}%)`;
+    
+    // Atualiza timeline com animação sofisticada
+    timelineSteps.forEach((step, i) => {
+      const number = step.querySelector('.timeline-number');
+      
+      if (i === currentIndex) {
+        // Remove a classe primeiro para retriggerar a animação
+        step.classList.remove('timeline-step--active');
+        // Force reflow para garantir que a animação seja retriggered
+        void step.offsetWidth;
+        step.classList.add('timeline-step--active');
+      } else {
+        step.classList.remove('timeline-step--active');
+      }
+    });
+    
+    // Atualiza descrição com animação fluida
+    const currentCard = cards[currentIndex];
+    const newDesc = currentCard.getAttribute('data-description');
+    if (newDesc && description) {
+      description.style.opacity = '0';
+      setTimeout(() => {
+        description.textContent = newDesc;
+        description.style.opacity = '1';
+      }, 300);
+    }
+    
+    // Atualiza escala dos cards
+    cards.forEach((card, i) => {
+      card.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease';
+      
+      if (i === currentIndex) {
+        // Card ativo (esquerda) - MAIOR
+        card.style.transform = 'scale(1.05)';
+        card.style.opacity = '1';
+        card.style.zIndex = '2';
+      } else if (i === currentIndex + 1 || (currentIndex === cards.length - 1 && i === 0)) {
+        // Próximo card (direita) - MENOR - com loop infinito
+        card.style.transform = 'scale(0.88)';
+        card.style.opacity = '0.7';
+        card.style.zIndex = '1';
+      } else {
+        // Cards fora da view
+        card.style.transform = 'scale(0.8)';
+        card.style.opacity = '0';
+        card.style.zIndex = '0';
+      }
+    });
+  }
+  
+  function goToSlide(index) {
+    // Loop infinito: se passar do último, volta pro primeiro; se voltar do primeiro, vai pro último
+    if (index >= cards.length) {
+      currentIndex = 0;
+    } else if (index < 0) {
+      currentIndex = cards.length - 1;
+    } else {
+      currentIndex = index;
+    }
+    updateCarousel();
+  }
+  
+  prevBtn.addEventListener('click', () => {
+    goToSlide(currentIndex - 1);
+  });
+  
+  nextBtn.addEventListener('click', () => {
+    goToSlide(currentIndex + 1);
+  });
+  
+  // Timeline clicável
+  timelineSteps.forEach((step, i) => {
+    step.style.cursor = 'pointer';
+    step.addEventListener('click', () => goToSlide(i));
+  });
+  
+  // Inicializa
+  updateCarousel();
+})();
