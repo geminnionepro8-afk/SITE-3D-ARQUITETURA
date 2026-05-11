@@ -41,7 +41,9 @@
 .cta-form-section h2,
 .cta-form-section .cta-form-title,
 .authority-section h2,
-.authority-section .authority-title {
+.authority-section .authority-title,
+.testi-section h2,
+.testi-section .testi-title {
   background: none !important;
   -webkit-background-clip: unset !important;
   background-clip: unset !important;
@@ -53,9 +55,7 @@
 .materials-section h2,
 .materials-section .materials-title,
 .about-us-section h2,
-.about-us-section .about-us-title,
-.testi-section h2,
-.testi-section .testi-title {
+.about-us-section .about-us-title {
   background: none !important;
   -webkit-background-clip: unset !important;
   background-clip: unset !important;
@@ -355,7 +355,7 @@ body {
    VIDEO SCROLL SPACE
    ============================================ */
 #video-scroll-space {
-  height: 300vh;
+  height: 190vh;
   background: #ffffff;
   position: relative;
   z-index: 1;
@@ -375,7 +375,6 @@ body {
   transition: opacity 0.3s ease;
 }
 #canvas-container.active { opacity: 1; }
-#canvas { width: 100%; height: 100%; display: block; }
 
 /* White gradient overlay to hide watermark at bottom */
 #canvas-container::after {
@@ -389,11 +388,7 @@ body {
   pointer-events: none;
   z-index: 2;
 }
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.4s ease;
-}
-#canvas-container.visible { opacity: 1; }
+
 #canvas { width: 100%; height: 100%; display: block; }
 
 /* ============================================
@@ -411,7 +406,11 @@ body {
 /* ============================================
    CONTENT SECTIONS
    ============================================ */
-#content { position: relative; z-index: 10; }
+#content {
+  position: relative;
+  z-index: 10;
+  background: #ffffff;
+}
 
 .section {
   width: 100%;
@@ -2816,7 +2815,7 @@ p.sub.dark { color: #555; }
 }
 
 /* ============================================
-   TESTIMONIALS SECTION — infinite scroll columns
+   TESTIMONIALS SECTION — 3 colunas scroll infinito — infinite scroll columns
    ============================================ */
 
 .testimonials-section {
@@ -2975,12 +2974,6 @@ p.sub.dark { color: #555; }
 
 .testi-stars-row--dark {
   color: #ffffff;
-}
-
-
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
 }
 
 .testi-card-author img {
@@ -3330,8 +3323,6 @@ p.sub.dark { color: #555; }
     gap: 1rem;
   }
 }
-  }
-}
 
 @media (max-width: 500px) {
   .footer-top {
@@ -3441,7 +3432,45 @@ p.sub.dark { color: #555; }
   flex-direction: column;
   gap: 0.9rem;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
+
+.material-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--material-bg, none);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.32;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.material-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(26,26,26,0.78) 0%, rgba(26,26,26,0.68) 55%, rgba(37,37,37,0.8) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.material-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.material-card--1 { --material-bg: url("../imagens seção materiais utilizados/8.png"); }
+.material-card--2 { --material-bg: url("../imagens seção materiais utilizados/1.png"); }
+.material-card--3 { --material-bg: url("../imagens seção materiais utilizados/3.png"); }
+.material-card--4 { --material-bg: url("../imagens seção materiais utilizados/2.png"); }
+.material-card--5 { --material-bg: url("../imagens seção materiais utilizados/6.png"); }
+.material-card--6 { --material-bg: url("../imagens seção materiais utilizados/5.png"); }
+.material-card--7 { --material-bg: url("../imagens seção materiais utilizados/4.png"); }
+.material-card--8 { --material-bg: url("../imagens seção materiais utilizados/7.png"); }
 
 .material-card:hover {
   transform: translateY(-4px);
@@ -3726,31 +3755,28 @@ p.sub.dark { color: #555; }
 }
 
 /* ============================================
-   TESTIMONIALS SECTION
+   TESTIMONIALS SECTION — 3 colunas scroll infinito
    ============================================ */
 
 .testi-section {
-  background: #f5f5f5;
-  padding: 7rem 5vw;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 40%, #1f1f1f 70%, #111111 100%);
+  padding: 7rem 0;
   min-height: auto;
   display: block;
+  overflow: hidden;
+  width: 100%;
 }
 
-.testi-wrap {
-  max-width: 860px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4rem;
-}
-
-/* Intro */
-.testi-intro {
+/* Título da seção */
+.testi-header {
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  padding: 0 5vw 4rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.testi-header .label {
+  color: rgba(255,255,255,0.4);
 }
 
 .testi-title {
@@ -3759,197 +3785,119 @@ p.sub.dark { color: #555; }
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: -0.02em;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
-/* Componente */
-.testi-component {
+/* Máscara fade top/bottom */
+.testi-columns-mask {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+  max-height: 740px;
+  overflow: hidden;
   width: 100%;
+}
+
+/* Container das 3 colunas — sem overflow lateral */
+.testi-columns {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  padding: 0 5vw;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100vw;
+}
+
+.testi-col {
+  flex: 1;
+  max-width: 380px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 900px) { .testi-col--3 { display: none; } }
+@media (max-width: 600px) { .testi-col--2 { display: none; } }
+
+.testi-col-track {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 2.5rem;
+  gap: 1.5rem;
+  animation: testiScroll var(--testi-duration, 32s) linear infinite;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
 }
 
-/* Avatar area */
-.testi-avatar-area {
-  position: relative;
-  width: 100%;
-  height: 120px;
+.testi-col--1 .testi-col-track { --testi-duration: 18s; }
+.testi-col--2 .testi-col-track { --testi-duration: 22s; }
+.testi-col--3 .testi-col-track { --testi-duration: 20s; }
+
+@keyframes testiScroll {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(0, calc(-1 * var(--scroll-distance, 50%)), 0); }
+}
+
+.testi-col:hover .testi-col-track { animation-play-state: paused; }
+
+/* Cards — brancos sobre fundo preto */
+.testi-card {
+  background: #ffffff;
+  border: none;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: default;
+}
+
+.testi-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+
+.testi-card blockquote { margin: 0; padding: 0; }
+
+.testi-card blockquote p {
+  font-size: 0.92rem;
+  line-height: 1.75;
+  color: #444;
+  font-weight: 300;
+  margin: 0 0 1.5rem;
+}
+
+.testi-card blockquote footer {
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
-}
-
-/* Glow radial atrás da foto */
-.testi-avatar-glow {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 320px;
-  height: 320px;
-  border-radius: 50%;
-  background: radial-gradient(ellipse at top, rgba(0,0,0,0.06) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.testi-avatar-stack {
-  position: relative;
-  width: 72px;
-  height: 72px;
-}
-
-.testi-avatar-item {
-  position: absolute;
-  inset: 0;
-  display: flex;
   align-items: center;
-  justify-content: center;
-  /* Estado padrão: invisível, rotacionado */
-  opacity: 0;
-  transform: rotate(60deg);
-  transition: opacity 0.7s cubic-bezier(0.68, -0.3, 0.32, 1),
-              transform 0.7s cubic-bezier(0.68, -0.3, 0.32, 1);
-  pointer-events: none;
+  gap: 0.85rem;
 }
 
-.testi-avatar-item.active {
-  opacity: 1;
-  transform: rotate(0deg);
-  pointer-events: auto;
-}
-
-.testi-avatar-item.leaving {
-  opacity: 0;
-  transform: rotate(-60deg);
-}
-
-.testi-avatar-img {
-  width: 72px;
-  height: 72px;
+.testi-card blockquote footer img {
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #ffffff;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
-  /* Fade na parte inferior para fundir com o fundo */
-  -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  border: 2px solid #f0f0f0;
+  flex-shrink: 0;
 }
 
-/* Quote area */
-.testi-quote-area {
-  position: relative;
-  width: 100%;
-  min-height: 120px;
-}
-
-.testi-quote-stack {
-  position: relative;
-}
-
-.testi-quote-item {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transform: translateX(-20px);
-  transition: opacity 0.5s ease 0.2s,
-              transform 0.5s ease 0.2s;
-  pointer-events: none;
-}
-
-.testi-quote-item.active {
-  position: relative;
-  opacity: 1;
-  transform: translateX(0);
-  pointer-events: auto;
-}
-
-.testi-quote-item.leaving {
-  position: absolute;
-  opacity: 0;
-  transform: translateX(20px);
-  transition: opacity 0.3s ease,
-              transform 0.3s ease;
-}
-
-.testi-quote {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(1.5rem, 2.2vw, 2rem);
-  font-weight: 500;
-  line-height: 1.55;
-  color: #1a1a1a;
-  text-align: center;
-  font-style: italic;
-}
-
-.testi-quote::before { content: '\201C'; }
-.testi-quote::after  { content: '\201D'; }
-
-/* Pills de navegação */
-.testi-pills {
+.testi-card blockquote footer div {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.6rem;
+  flex-direction: column;
+  gap: 0.15rem;
 }
 
-.testi-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.55rem 1.1rem;
-  border-radius: 50px;
-  border: none;
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.78rem;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  transition: all 0.25s ease;
-  /* Inativo: fundo branco, texto escuro */
-  background: #ffffff;
-  color: #555;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-}
-
-.testi-pill:hover {
-  background: #f0f0f0;
+.testi-card blockquote footer cite {
+  font-style: normal;
+  font-size: 0.85rem;
+  font-weight: 600;
   color: #1a1a1a;
 }
 
-/* Ativo: fundo escuro fosco, texto branco */
-.testi-pill.active {
-  background: linear-gradient(135deg, #2e2e2e 0%, #1a1a1a 50%, #252525 100%);
-  color: #ffffff;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.2);
-}
-
-.testi-pill-sep {
-  opacity: 0.4;
-  font-size: 0.7rem;
-}
-
-.testi-pill.active .testi-pill-sep {
-  opacity: 0.5;
-}
-
-.testi-pill-role {
-  opacity: 0.7;
+.testi-card blockquote footer span {
+  font-size: 0.78rem;
+  color: #999;
   font-weight: 400;
 }
-
-/* Responsivo */
-@media (max-width: 600px) {
-  .testi-quote {
-    font-size: 1.35rem;
-  }
-  .testi-pill {
-    font-size: 0.72rem;
-    padding: 0.5rem 0.9rem;
-  }
-}
-
 /* ============================================
    FAQ SECTION — redesign escuro com tabs
    ============================================ */

@@ -183,25 +183,29 @@ function initVideoScroll() {
 
   ScrollTrigger.create({
     trigger: videoSpace,
-    start: 'top 80%',
+    start: 'top bottom',
     end: 'bottom bottom',
     scrub: 0.5,                          // suaviza o scrub, reduz chamadas
     onEnter:     () => container.classList.add('active'),
+    onEnterBack: () => container.classList.add('active'),
+    onLeave:     () => {},
     onLeaveBack: () => {
       container.classList.remove('active');
       container.style.clipPath = 'inset(30% 15% 30% 15% round 24px)';
+      if (hero) hero.style.opacity = '1';
+      lastIdx = -1;
     },
     onUpdate: self => {
       const p = self.progress;
-
-      // Hero fade
-      if (hero) hero.style.opacity = Math.max(0, 1 - p * 10);
 
       // Clip-path expand
       const phase  = Math.min(p / 0.25, 1);
       const insetV = 30 * (1 - phase);
       const insetH = 15 * (1 - phase);
       const radius = 24 * (1 - phase);
+      // Hero só começa a desaparecer quando o vídeo já está aparecendo.
+      const heroFade = Math.max(0, 1 - phase * 1.2);
+      if (hero) hero.style.opacity = heroFade;
       container.style.clipPath =
         `inset(${insetV}% ${insetH}% ${insetV}% ${insetH}% round ${radius}px)`;
 
@@ -477,13 +481,53 @@ function initCounters() {
 // TESTIMONIALS — duplicate cards for seamless infinite scroll
 // ============================================
 (function () {
-  document.querySelectorAll('.testi-track').forEach(track => {
-    // Clone all children and append — creates the seamless loop
-    const cards = Array.from(track.children);
-    cards.forEach(card => {
+  const tracks = Array.from(document.querySelectorAll('.testi-col-track'));
+  if (!tracks.length) return;
+
+  function getGap(track) {
+    const styles = window.getComputedStyle(track);
+    const rawGap = styles.rowGap !== 'normal' ? styles.rowGap : styles.gap;
+    const gap = Number.parseFloat(rawGap || '0');
+    return Number.isFinite(gap) ? gap : 0;
+  }
+
+  function setScrollDistance(track) {
+    const originalCount = Number.parseInt(track.dataset.originalCount || '0', 10);
+    if (!originalCount) return;
+
+    const cards = Array.from(track.children).slice(0, originalCount);
+    const cardsHeight = cards.reduce((sum, card) => sum + card.offsetHeight, 0);
+    const gap = getGap(track);
+    const distance = cardsHeight + gap * originalCount;
+    track.style.setProperty('--scroll-distance', `${distance}px`);
+  }
+
+  tracks.forEach(track => {
+    if (track.dataset.loopReady === 'true') return;
+    const originals = Array.from(track.children);
+    track.dataset.originalCount = String(originals.length);
+
+    originals.forEach(card => {
       const clone = card.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
       track.appendChild(clone);
     });
+
+    track.dataset.loopReady = 'true';
+    setScrollDistance(track);
+  });
+
+  let resizeRaf = null;
+  window.addEventListener('resize', () => {
+    if (resizeRaf) cancelAnimationFrame(resizeRaf);
+    resizeRaf = requestAnimationFrame(() => {
+      tracks.forEach(setScrollDistance);
+      resizeRaf = null;
+    });
+  });
+
+  window.addEventListener('load', () => {
+    tracks.forEach(setScrollDistance);
   });
 })();
 
