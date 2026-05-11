@@ -24,6 +24,7 @@ window.addEventListener('DOMContentLoaded', () => {
   ctx = canvas.getContext('2d', { alpha: false });
   canvasContainer = document.getElementById('canvas-container');
 
+  initMobileMenu();
   resizeCanvas();
   window.addEventListener('resize', resizeCanvas);
   preloadFrames();
@@ -116,8 +117,9 @@ function drawFrame(idx) {
   const dpr = window.devicePixelRatio || 1;
   const cw = canvas.width / dpr, ch = canvas.height / dpr;
   const isMobile = window.matchMedia(MOBILE_MEDIA_QUERY).matches;
-  const scaleFactor = isMobile ? 0.58 : IMAGE_SCALE;
-  const scale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight) * scaleFactor;
+  const coverScale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight) * IMAGE_SCALE;
+  const mobileScale = Math.min(cw / img.naturalWidth, ch / img.naturalHeight) * 1.12;
+  const scale = isMobile ? mobileScale : coverScale;
   const dw = img.naturalWidth * scale, dh = img.naturalHeight * scale;
   ctx.fillStyle = bgColor;
   ctx.fillRect(0, 0, cw, ch);
@@ -133,6 +135,7 @@ function initSite() {
   initVideoScroll();
   initSectionAnims();
   initCounters();
+  initMaterialsAccordion();
 }
 
 // ============================================
@@ -184,10 +187,10 @@ function initVideoScroll() {
   let rafPending = false;
   let lastIdx = -1;
   const isMobile = window.matchMedia(MOBILE_MEDIA_QUERY).matches;
-  const initialInsetV = isMobile ? 20 : 30;
-  const initialInsetH = isMobile ? 4 : 15;
-  const initialRadius = isMobile ? 16 : 24;
-  const revealEnd = isMobile ? 0.22 : 0.25;
+  const initialInsetV = isMobile ? 14 : 30;
+  const initialInsetH = isMobile ? 2 : 15;
+  const initialRadius = isMobile ? 18 : 24;
+  const revealEnd = isMobile ? 0.24 : 0.25;
 
   ScrollTrigger.create({
     trigger: videoSpace,
@@ -322,6 +325,50 @@ function initCounters() {
   onScroll(); // estado inicial
 })();
 
+function initMobileMenu() {
+  const header = document.getElementById('siteHeader');
+  const toggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  if (!header || !toggle || !navLinks) return;
+
+  const mobileQuery = window.matchMedia(MOBILE_MEDIA_QUERY);
+  const links = Array.from(navLinks.querySelectorAll('a'));
+
+  function setExpanded(expanded) {
+    header.classList.toggle('menu-open', expanded);
+    document.body.classList.toggle('nav-open', expanded);
+    toggle.setAttribute('aria-expanded', String(expanded));
+    toggle.setAttribute('aria-label', expanded ? 'Fechar menu' : 'Abrir menu');
+  }
+
+  function closeMenu() {
+    setExpanded(false);
+  }
+
+  function syncMenu() {
+    if (!mobileQuery.matches) closeMenu();
+  }
+
+  toggle.addEventListener('click', () => {
+    if (!mobileQuery.matches) return;
+    setExpanded(!header.classList.contains('menu-open'));
+  });
+
+  links.forEach(link => {
+    link.addEventListener('click', closeMenu);
+  });
+
+  document.addEventListener('click', event => {
+    if (!mobileQuery.matches) return;
+    if (!header.classList.contains('menu-open')) return;
+    if (header.contains(event.target)) return;
+    closeMenu();
+  });
+
+  window.addEventListener('resize', syncMenu, { passive: true });
+  syncMenu();
+}
+
 // ============================================
 // GALLERY — expand on hover + lightbox
 // ============================================
@@ -333,21 +380,35 @@ function initCounters() {
 
   const cards = Array.from(track.querySelectorAll('.gal-card'));
   const total = cards.length;
-  const perPage = 4; // cards visíveis por vez
   let page = 0;
-  const totalPages = Math.ceil(total / perPage);
+
+  function getPerPage() {
+    if (window.innerWidth <= 640) return 1;
+    if (window.innerWidth <= 1024) return 2;
+    return 4;
+  }
+
+  function getTotalPages() {
+    return Math.ceil(total / getPerPage());
+  }
 
   function update() {
+    const perPage = getPerPage();
+    const totalPages = getTotalPages();
+    page = Math.min(page, totalPages - 1);
+
     cards.forEach((c, i) => {
       const inPage = i >= page * perPage && i < (page + 1) * perPage;
       c.style.display = inPage ? '' : 'none';
     });
+
     prevBtn.style.opacity = page === 0 ? '0.35' : '1';
     nextBtn.style.opacity = page >= totalPages - 1 ? '0.35' : '1';
   }
 
   prevBtn.addEventListener('click', () => { if (page > 0) { page--; update(); } });
-  nextBtn.addEventListener('click', () => { if (page < totalPages - 1) { page++; update(); } });
+  nextBtn.addEventListener('click', () => { if (page < getTotalPages() - 1) { page++; update(); } });
+  window.addEventListener('resize', update, { passive: true });
   update();
 
   // Lightbox
@@ -573,9 +634,19 @@ function handleFormSubmit(e) {
   let currentIndex = 0;
   
   function updateCarousel() {
-    // Move o track - cards meio termo (42%)
-    const offset = currentIndex * -44.5; // 42% + 2.5% gap
-    track.style.transform = `translateX(${offset}%)`;
+    const isMobile = window.matchMedia(MOBILE_MEDIA_QUERY).matches;
+    const nextIndex = (currentIndex + 1) % cards.length;
+
+    if (isMobile) {
+      const carousel = track.parentElement;
+      const activeCard = cards[currentIndex];
+      const maxOffset = Math.max(track.scrollWidth - carousel.clientWidth, 0);
+      const centeredOffset = activeCard.offsetLeft - ((carousel.clientWidth - activeCard.offsetWidth) / 2);
+      const targetOffset = Math.min(Math.max(centeredOffset, 0), maxOffset);
+      track.style.transform = `translateX(-${targetOffset}px)`;
+    } else {
+      track.style.transform = 'translateX(0)';
+    }
     
     // Atualiza timeline com animação sofisticada
     timelineSteps.forEach((step, i) => {
@@ -606,22 +677,43 @@ function handleFormSubmit(e) {
     // Atualiza escala dos cards
     cards.forEach((card, i) => {
       card.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease';
-      
-      if (i === currentIndex) {
-        // Card ativo (esquerda) - MAIOR
-        card.style.transform = 'scale(1.05)';
-        card.style.opacity = '1';
-        card.style.zIndex = '2';
-      } else if (i === currentIndex + 1 || (currentIndex === cards.length - 1 && i === 0)) {
-        // Próximo card (direita) - MENOR - com loop infinito
-        card.style.transform = 'scale(0.88)';
-        card.style.opacity = '0.7';
-        card.style.zIndex = '1';
+
+      if (isMobile) {
+        card.style.display = '';
+        card.style.order = '0';
+
+        if (i === currentIndex) {
+          card.style.transform = 'scale(1)';
+          card.style.opacity = '1';
+          card.style.zIndex = '2';
+        } else {
+          card.style.transform = 'scale(0.92)';
+          card.style.opacity = '0.45';
+          card.style.zIndex = '1';
+        }
       } else {
-        // Cards fora da view
-        card.style.transform = 'scale(0.8)';
-        card.style.opacity = '0';
-        card.style.zIndex = '0';
+        if (i === currentIndex) {
+          // Mantém o card atual como destaque principal.
+          card.style.display = '';
+          card.style.order = '1';
+          card.style.transform = 'scale(1.05)';
+          card.style.opacity = '1';
+          card.style.zIndex = '2';
+        } else if (i === nextIndex) {
+          // Exibe apenas o próximo card como apoio visual.
+          card.style.display = '';
+          card.style.order = '2';
+          card.style.transform = 'scale(0.88)';
+          card.style.opacity = '0.7';
+          card.style.zIndex = '1';
+        } else {
+          // Mantém a regra de apenas 2 cards visíveis por vez.
+          card.style.display = 'none';
+          card.style.order = '3';
+          card.style.transform = 'scale(0.8)';
+          card.style.opacity = '0';
+          card.style.zIndex = '0';
+        }
       }
     });
   }
@@ -651,10 +743,74 @@ function handleFormSubmit(e) {
     step.style.cursor = 'pointer';
     step.addEventListener('click', () => goToSlide(i));
   });
+
+  window.addEventListener('resize', updateCarousel, { passive: true });
   
   // Inicializa
   updateCarousel();
 })();
+
+function initMaterialsAccordion() {
+  const cards = Array.from(document.querySelectorAll('.material-card'));
+  if (!cards.length) return;
+
+  const mobileQuery = window.matchMedia(MOBILE_MEDIA_QUERY);
+
+  function closeAll() {
+    cards.forEach(card => {
+      card.classList.remove('is-open');
+      card.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  function ensureOneOpen() {
+    if (!mobileQuery.matches) return;
+    if (cards.some(card => card.classList.contains('is-open'))) return;
+    cards[0].classList.add('is-open');
+    cards[0].setAttribute('aria-expanded', 'true');
+  }
+
+  function syncMode() {
+    cards.forEach(card => {
+      if (mobileQuery.matches) {
+        card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
+        if (!card.hasAttribute('aria-expanded')) {
+          card.setAttribute('aria-expanded', 'false');
+        }
+      } else {
+        card.classList.remove('is-open');
+        card.removeAttribute('role');
+        card.removeAttribute('tabindex');
+        card.removeAttribute('aria-expanded');
+      }
+    });
+
+    ensureOneOpen();
+  }
+
+  cards.forEach(card => {
+    function toggleCard() {
+      if (!mobileQuery.matches) return;
+      const willOpen = !card.classList.contains('is-open');
+      closeAll();
+      if (willOpen) {
+        card.classList.add('is-open');
+        card.setAttribute('aria-expanded', 'true');
+      }
+    }
+
+    card.addEventListener('click', toggleCard);
+    card.addEventListener('keydown', event => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      toggleCard();
+    });
+  });
+
+  window.addEventListener('resize', syncMode, { passive: true });
+  syncMode();
+}
 
 // ============================================
 // TESTIMONIALS — autorotate + animação elástica
@@ -726,6 +882,13 @@ function handleFormSubmit(e) {
   const tabs  = document.querySelectorAll('.faq-tab');
   if (!items.length) return;
 
+  function openFirstVisible(category) {
+    const firstVisible = Array.from(items).find(item => item.dataset.category === category);
+    if (!firstVisible) return;
+    firstVisible.classList.add('open');
+    firstVisible.querySelector('.faq-question').setAttribute('aria-expanded', 'true');
+  }
+
   // TABS — filtra por categoria
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
@@ -746,6 +909,8 @@ function handleFormSubmit(e) {
           item.classList.add('faq-item--hidden');
         }
       });
+
+      openFirstVisible(cat);
     });
   });
 
@@ -769,4 +934,9 @@ function handleFormSubmit(e) {
       btn.setAttribute('aria-expanded', String(!isOpen));
     });
   });
+
+  const activeTab = Array.from(tabs).find(tab => tab.classList.contains('active'));
+  if (activeTab) {
+    openFirstVisible(activeTab.dataset.category);
+  }
 })();
