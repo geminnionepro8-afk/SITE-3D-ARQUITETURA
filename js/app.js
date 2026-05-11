@@ -4,6 +4,7 @@
 const FRAME_COUNT = 192;
 const IMAGE_SCALE = 0.88;
 const PRELOAD_COUNT = 10;
+const MOBILE_MEDIA_QUERY = '(max-width: 768px)';
 
 // ============================================
 // STATE
@@ -114,7 +115,9 @@ function drawFrame(idx) {
   if (!img) return;
   const dpr = window.devicePixelRatio || 1;
   const cw = canvas.width / dpr, ch = canvas.height / dpr;
-  const scale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight) * IMAGE_SCALE;
+  const isMobile = window.matchMedia(MOBILE_MEDIA_QUERY).matches;
+  const scaleFactor = isMobile ? 0.72 : IMAGE_SCALE;
+  const scale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight) * scaleFactor;
   const dw = img.naturalWidth * scale, dh = img.naturalHeight * scale;
   ctx.fillStyle = bgColor;
   ctx.fillRect(0, 0, cw, ch);
@@ -180,6 +183,11 @@ function initVideoScroll() {
 
   let rafPending = false;
   let lastIdx = -1;
+  const isMobile = window.matchMedia(MOBILE_MEDIA_QUERY).matches;
+  const initialInsetV = isMobile ? 22 : 30;
+  const initialInsetH = isMobile ? 6 : 15;
+  const initialRadius = isMobile ? 16 : 24;
+  const revealEnd = isMobile ? 0.18 : 0.25;
 
   ScrollTrigger.create({
     trigger: videoSpace,
@@ -191,7 +199,7 @@ function initVideoScroll() {
     onLeave:     () => {},
     onLeaveBack: () => {
       container.classList.remove('active');
-      container.style.clipPath = 'inset(30% 15% 30% 15% round 24px)';
+      container.style.clipPath = `inset(${initialInsetV}% ${initialInsetH}% ${initialInsetV}% ${initialInsetH}% round ${initialRadius}px)`;
       if (hero) hero.style.opacity = '1';
       lastIdx = -1;
     },
@@ -199,10 +207,10 @@ function initVideoScroll() {
       const p = self.progress;
 
       // Clip-path expand
-      const phase  = Math.min(p / 0.25, 1);
-      const insetV = 30 * (1 - phase);
-      const insetH = 15 * (1 - phase);
-      const radius = 24 * (1 - phase);
+      const phase  = Math.min(p / revealEnd, 1);
+      const insetV = initialInsetV * (1 - phase);
+      const insetH = initialInsetH * (1 - phase);
+      const radius = initialRadius * (1 - phase);
       // Hero só começa a desaparecer quando o vídeo já está aparecendo.
       const heroFade = Math.max(0, 1 - phase * 1.2);
       if (hero) hero.style.opacity = heroFade;

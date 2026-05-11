@@ -249,6 +249,163 @@ body {
   }
 }
 
+/* ============================================
+   MOBILE-FIRST ISOLATION (Hero + Video + Legacy)
+   These rules only apply to phone/tablet widths.
+   ============================================ */
+@media (max-width: 768px) {
+  html, body {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .nav-cta {
+    padding: 0.42rem 0.8rem;
+    font-size: 0.64rem !important;
+    border-radius: 7px;
+  }
+
+  /* HERO — visual hierarchy tuned for mobile */
+  #hero {
+    height: 100svh;
+    min-height: 100svh;
+    padding-top: 4.75rem;
+  }
+
+  .hero-content {
+    width: min(92vw, 430px);
+    max-width: 430px;
+  }
+
+  .hero-label {
+    font-size: 0.82rem;
+    letter-spacing: 0.2em;
+    margin-bottom: 1.35rem;
+  }
+
+  .hero-heading {
+    font-size: clamp(3.2rem, 13vw, 4.8rem);
+    line-height: 1.02;
+    margin-bottom: 1.1rem;
+    letter-spacing: -0.028em;
+  }
+
+  .hero-sub {
+    font-size: clamp(1.05rem, 4.2vw, 1.35rem);
+    line-height: 1.55;
+    max-width: 320px;
+  }
+
+  .scroll-hint {
+    bottom: 1.35rem;
+    font-size: 0.68rem;
+  }
+
+  /* Video scroll block — shorter and better framed for phone */
+  #video-scroll-space {
+    height: 160svh;
+  }
+
+  #canvas-container {
+    clip-path: inset(30% 10% 30% 10% round 14px);
+  }
+
+  #canvas-container::after {
+    height: 24%;
+  }
+
+  /* SECOND CONTENT SECTION (Legacy) */
+  .legacy-section {
+    padding: 4.5rem 5vw;
+  }
+
+  .legacy-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .legacy-left {
+    gap: 1.4rem;
+  }
+
+  .legacy-title {
+    font-size: clamp(3.6rem, 15vw, 5.6rem);
+    line-height: 1.03;
+    text-wrap: balance;
+  }
+
+  .legacy-mobile-model {
+    display: block;
+    width: min(90%, 420px);
+    margin: 0.25rem auto 0;
+  }
+
+  .legacy-mobile-model-img {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .legacy-sub {
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  .title-leaf {
+    width: clamp(4.2rem, 17vw, 6.5rem);
+    height: clamp(2.5rem, 9vw, 3.8rem);
+  }
+
+  .legacy-right {
+    display: none;
+  }
+
+  .legacy-bleed-img {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .authority-wrap {
+    grid-template-columns: 1fr;
+  }
+
+  .authority-content {
+    gap: 2rem;
+  }
+
+  .authority-image {
+    display: none;
+  }
+
+  .authority-image-mobile {
+    display: block;
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .authority-image-mobile img {
+    width: 100%;
+    height: auto;
+    max-height: 280px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .authority-stats {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
 
 
 /* ============================================
@@ -1000,6 +1157,10 @@ p.sub.dark { color: #555; }
   max-width: 420px;
 }
 
+.legacy-mobile-model {
+  display: none;
+}
+
 /* Two thumbnail images side by side */
 .legacy-thumbs {
   display: grid;
@@ -1066,7 +1227,8 @@ p.sub.dark { color: #555; }
     gap: 0.75rem;
   }
   .legacy-title {
-    font-size: 2rem;
+    font-size: clamp(3.1rem, 14.5vw, 4.4rem);
+    line-height: 1.02;
   }
 }
 
@@ -1347,6 +1509,10 @@ p.sub.dark { color: #555; }
   transform: scale(1.05);
 }
 
+.authority-image-mobile {
+  display: none;
+}
+
 /* Mobile */
 @media (max-width: 1024px) {
   .authority-stats {
@@ -1363,6 +1529,16 @@ p.sub.dark { color: #555; }
   
   .authority-content {
     padding: 3rem 5vw;
+    gap: 1.75rem;
+  }
+
+  .authority-title {
+    order: 1;
+  }
+
+  .authority-image-mobile {
+    order: 2;
+    margin-top: 0.25rem;
   }
   
   .authority-image {
@@ -1370,6 +1546,7 @@ p.sub.dark { color: #555; }
   }
   
   .authority-stats {
+    order: 3;
     grid-template-columns: 1fr;
     gap: 2rem;
   }
