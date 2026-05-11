@@ -307,11 +307,12 @@ body {
   }
 
   #canvas-container {
-    clip-path: inset(30% 10% 30% 10% round 14px);
+    clip-path: inset(25% 2% 25% 2% round 14px);
   }
 
   #canvas-container::after {
-    height: 24%;
+    height: 18%;
+    background: linear-gradient(to top, #ffffff 0%, rgba(255,255,255,0.7) 40%, transparent 100%);
   }
 
   /* SECOND CONTENT SECTION (Legacy) */

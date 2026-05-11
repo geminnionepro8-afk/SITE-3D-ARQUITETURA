@@ -116,7 +116,7 @@ function drawFrame(idx) {
   const dpr = window.devicePixelRatio || 1;
   const cw = canvas.width / dpr, ch = canvas.height / dpr;
   const isMobile = window.matchMedia(MOBILE_MEDIA_QUERY).matches;
-  const scaleFactor = isMobile ? 0.72 : IMAGE_SCALE;
+  const scaleFactor = isMobile ? 0.45 : IMAGE_SCALE;
   const scale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight) * scaleFactor;
   const dw = img.naturalWidth * scale, dh = img.naturalHeight * scale;
   ctx.fillStyle = bgColor;
@@ -184,8 +184,8 @@ function initVideoScroll() {
   let rafPending = false;
   let lastIdx = -1;
   const isMobile = window.matchMedia(MOBILE_MEDIA_QUERY).matches;
-  const initialInsetV = isMobile ? 22 : 30;
-  const initialInsetH = isMobile ? 6 : 15;
+  const initialInsetV = isMobile ? 18 : 30;
+  const initialInsetH = isMobile ? 2 : 15;
   const initialRadius = isMobile ? 16 : 24;
   const revealEnd = isMobile ? 0.18 : 0.25;
 
