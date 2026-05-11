@@ -665,3 +665,56 @@ function handleFormSubmit(e) {
   // Inicia autorotate
   startAutorotate();
 })();
+
+// ============================================
+// FAQ ACCORDION + TABS
+// ============================================
+(function () {
+  const items = document.querySelectorAll('.faq-item');
+  const tabs  = document.querySelectorAll('.faq-tab');
+  if (!items.length) return;
+
+  // TABS — filtra por categoria
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const cat = tab.dataset.category;
+
+      // Atualiza tab ativa
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      // Fecha todos e mostra só os da categoria
+      items.forEach(item => {
+        item.classList.remove('open');
+        item.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+
+        if (item.dataset.category === cat) {
+          item.classList.remove('faq-item--hidden');
+        } else {
+          item.classList.add('faq-item--hidden');
+        }
+      });
+    });
+  });
+
+  // ACCORDION
+  items.forEach(item => {
+    const btn = item.querySelector('.faq-question');
+    if (!btn) return;
+
+    btn.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+
+      // Fecha todos os outros visíveis
+      items.forEach(other => {
+        if (other !== item && !other.classList.contains('faq-item--hidden')) {
+          other.classList.remove('open');
+          other.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      item.classList.toggle('open', !isOpen);
+      btn.setAttribute('aria-expanded', String(!isOpen));
+    });
+  });
+})();
