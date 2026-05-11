@@ -3463,14 +3463,14 @@ p.sub.dark { color: #555; }
   z-index: 1;
 }
 
-.material-card--1 { --material-bg: url("../imagens seção materiais utilizados/8.png"); }
-.material-card--2 { --material-bg: url("../imagens seção materiais utilizados/1.png"); }
-.material-card--3 { --material-bg: url("../imagens seção materiais utilizados/3.png"); }
-.material-card--4 { --material-bg: url("../imagens seção materiais utilizados/2.png"); }
-.material-card--5 { --material-bg: url("../imagens seção materiais utilizados/6.png"); }
-.material-card--6 { --material-bg: url("../imagens seção materiais utilizados/5.png"); }
-.material-card--7 { --material-bg: url("../imagens seção materiais utilizados/4.png"); }
-.material-card--8 { --material-bg: url("../imagens seção materiais utilizados/7.png"); }
+.material-card--1 { --material-bg: url("../imagens seção materiais utilizados/8.webp"); }
+.material-card--2 { --material-bg: url("../imagens seção materiais utilizados/1.webp"); }
+.material-card--3 { --material-bg: url("../imagens seção materiais utilizados/3.webp"); }
+.material-card--4 { --material-bg: url("../imagens seção materiais utilizados/2.webp"); }
+.material-card--5 { --material-bg: url("../imagens seção materiais utilizados/6.webp"); }
+.material-card--6 { --material-bg: url("../imagens seção materiais utilizados/5.webp"); }
+.material-card--7 { --material-bg: url("../imagens seção materiais utilizados/4.webp"); }
+.material-card--8 { --material-bg: url("../imagens seção materiais utilizados/7.webp"); }
 
 .material-card:hover {
   transform: translateY(-4px);
