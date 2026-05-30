@@ -78,34 +78,6 @@ body.nav-open {
 }
 
 /* ============================================
-   LOADER
-   ============================================ */
-#loader {
-  position: fixed; inset: 0;
-  background: var(--black);
-  z-index: 9999;
-  display: flex; align-items: center; justify-content: center;
-}
-.loader-content { text-align: center; }
-.loader-brand {
-  font-family: var(--font-display);
-  font-size: 1.75rem; font-weight: 700;
-  letter-spacing: 0.25em; margin-bottom: 2rem;
-}
-#loader-bar {
-  width: 280px; height: 1px;
-  background: rgba(255,255,255,0.15);
-  margin: 0 auto 1rem; position: relative;
-}
-#loader-fill {
-  position: absolute; top: 0; left: 0;
-  height: 100%; width: 0%;
-  background: var(--white);
-  transition: width 0.2s ease;
-}
-#loader-percent { font-size: 0.8rem; color: var(--gray); letter-spacing: 0.1em; }
-
-/* ============================================
    HEADER - Transparente no hero, branco após scroll
    ============================================ */
 .site-header {

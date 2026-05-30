@@ -47,9 +47,6 @@ function resizeCanvas() {
 // PRELOADER
 // ============================================
 function preloadFrames() {
-  const fill    = document.getElementById('loader-fill');
-  const percent = document.getElementById('loader-percent');
-
   function loadOne(i) {
     return new Promise(resolve => {
       const img = new Image();
@@ -57,9 +54,6 @@ function preloadFrames() {
       img.onload = () => {
         frames[i - 1] = img;
         loadedCount++;
-        const p = Math.floor((loadedCount / FRAME_COUNT) * 100);
-        fill.style.width = p + '%';
-        percent.textContent = p + '%';
         if (i === 1) sampleBg(img);
         resolve();
       };
@@ -67,26 +61,16 @@ function preloadFrames() {
     });
   }
 
-  // First 10 fast, then rest in background
+  // Carrega os primeiros frames e inicia o site imediatamente
   const first = [];
   for (let i = 1; i <= PRELOAD_COUNT; i++) first.push(loadOne(i));
 
   Promise.all(first).then(() => {
     drawFrame(0);
-    const rest = [];
-    for (let i = PRELOAD_COUNT + 1; i <= FRAME_COUNT; i++) rest.push(loadOne(i));
-    Promise.all(rest).then(onReady);
-  });
-}
-
-function onReady() {
-  const loader = document.getElementById('loader');
-  loader.style.transition = 'opacity 0.6s ease';
-  loader.style.opacity = '0';
-  setTimeout(() => {
-    loader.style.display = 'none';
     initSite();
-  }, 650);
+    // Carrega o restante em background sem bloquear
+    for (let i = PRELOAD_COUNT + 1; i <= FRAME_COUNT; i++) loadOne(i);
+  });
 }
 
 // ============================================
